@@ -7,62 +7,77 @@
 #include <string.h> // memcpy
 #include <queue>    // queue
 
-#define scheduler_init()            \
-{			            \
-   if (setjmp(main_env) == 0)	    \
-   {                                \
-      scheduler();		    \
-   }                                \
-}
+#define scheduler_init()         \
+   {                             \
+      if (setjmp(main_env) == 0) \
+      {                          \
+         scheduler();            \
+      }                          \
+   }
 
 #define scheduler_start()           \
-{			            \
-   if (setjmp(main_env) == 0)       \
    {                                \
-      longjmp(scheduler_env, 1);    \
-   }                                \
-}
+      if (setjmp(main_env) == 0)    \
+      {                             \
+         longjmp(scheduler_env, 1); \
+      }                             \
+   }
 
-#define capture()                   \
-{                                   \
-}
-    
-#define sthread_yield()             \
-{                                   \
-}
+// Allocate memory for thread stack & initialize its TCB
+// #define TCB                             \
+//    *allocate_stack(int stack_size)      \
+//   {                                    \
+//      TCB *tcb = new TCB();             \
+//      tcb->stack_ = malloc(stack_size); \
+//      tcb->size_ = stack_size;          \
+//      return tcb;                       \
+//   }
 
-#define sthread_init()              \
-{                                   \
-   if (setjmp(cur_tcb->env_) == 0 ) \
-   {                                \
-      capture();                    \
-      longjmp(main_env, 1);	        \
-   }                                \
-   memcpy(cur_tcb->sp_, cur_tcb->stack_, cur_tcb->size_);	\
-}
+#define capture()                     \
+   {                                  \
+      if (setjmp(cur_tcb->env_) == 0) \
+      {                               \
+      }                               \
+   }
+
+#define sthread_yield()        \
+   {                           \
+      capture();               \
+      thr_queue.push(cur_tcb); \
+      longjmp(main_env, 1);    \
+   }
+
+#define sthread_init()                                       \
+   {                                                         \
+      if (setjmp(cur_tcb->env_) == 0)                        \
+      {                                                      \
+         capture();                                          \
+         longjmp(main_env, 1);                               \
+      }                                                      \
+      memcpy(cur_tcb->sp_, cur_tcb->stack_, cur_tcb->size_); \
+   }
 
 #define sthread_create(function, arguments) \
-{                                           \
-   if (setjmp(main_env) == 0)               \
    {                                        \
-      func = &function;				        \
-      args = arguments;				        \
-      thread_created = true;			    \
-      cur_tcb = new TCB();			        \
-      longjmp(scheduler_env, 1);            \
-    }                                       \
-}
+      if (setjmp(main_env) == 0)            \
+      {                                     \
+         func = &function;                  \
+         args = arguments;                  \
+         thread_created = true;             \
+         cur_tcb = new TCB();               \
+         longjmp(scheduler_env, 1);         \
+      }                                     \
+   }
 
-#define sthread_exit()              \
-{			                        \
-   if (cur_tcb->stack_ != NULL)		\
-   {                                \
-      free(cur_tcb->stack_);			\
-   }                                \
-   delete cur_tcb;                  \
-   longjmp(scheduler_env, 1);		\
-}
-
+#define sthread_exit()             \
+   {                               \
+      if (cur_tcb->stack_ != NULL) \
+      {                            \
+         free(cur_tcb->stack_);    \
+      }                            \
+      delete cur_tcb;              \
+      longjmp(scheduler_env, 1);   \
+   }
 
 using namespace std;
 static jmp_buf main_env;
@@ -70,24 +85,24 @@ static jmp_buf scheduler_env;
 const int kTimeQuantum = 5;
 
 // Thread control block
-class TCB 
+class TCB
 {
 public:
    TCB() : sp_(NULL), stack_(NULL), size_(0) {}
-   jmp_buf env_;  // the execution environment captured by set_jmp()
-   void* sp_;     // the stack pointer 
-   void* stack_;  // the temporary space to maintain the latest stack contents
-   int size_;     // the size of the stack contents
+   jmp_buf env_; // the execution environment captured by set_jmp()
+   void *sp_;    // the stack pointer
+   void *stack_; // the temporary space to maintain the latest stack contents
+   int size_;    // the size of the stack contents
 };
 
-static TCB* cur_tcb = NULL;   // the TCB of the current thread in execution
+static TCB *cur_tcb = NULL; // the TCB of the current thread in execution
 
 // The queue of active threads
-static queue<TCB*> thr_queue;
+static queue<TCB *> thr_queue;
 
 // Alarm caught to switch to the next thread
 static bool alarmed = false;
-static void sig_alarm(int signo) 
+static void sig_alarm(int signo)
 {
    alarmed = true;
 }
@@ -97,13 +112,13 @@ void (*func)(void *);
 void *args = NULL;
 static bool thread_created = false;
 
-static void scheduler() 
+static void scheduler()
 {
    // invoke scheduler
-   if (setjmp(scheduler_env) == 0) 
+   if (setjmp(scheduler_env) == 0)
    {
       cerr << "scheduler: initialized" << endl;
-      if (signal(SIGALRM, sig_alarm) == SIG_ERR) 
+      if (signal(SIGALRM, sig_alarm) == SIG_ERR)
       {
          perror("signal function");
          exit(-1);
@@ -112,14 +127,14 @@ static void scheduler()
    }
 
    // check if it was called from sthread_create()
-   if (thread_created == true) 
+   if (thread_created == true)
    {
       thread_created = false;
       (*func)(args);
    }
 
    // restore the next thread's environment
-   if ((cur_tcb = thr_queue.front()) != NULL) 
+   if ((cur_tcb = thr_queue.front()) != NULL)
    {
       thr_queue.pop();
 
