@@ -23,21 +23,24 @@
       }                             \
    }
 
-// Allocate memory for thread stack & initialize its TCB
-// #define TCB                             \
-//    *allocate_stack(int stack_size)      \
-//   {                                    \
-//      TCB *tcb = new TCB();             \
-//      tcb->stack_ = malloc(stack_size); \
-//      tcb->size_ = stack_size;          \
-//      return tcb;                       \
-//   }
-
-#define capture()                     \
-   {                                  \
-      if (setjmp(cur_tcb->env_) == 0) \
-      {                               \
-      }                               \
+#define capture()                                                     \
+   {                                                                  \
+      if (setjmp(cur_tcb->env_) == 0)                                 \
+      {                                                               \
+         cur_tcb->sp_ = &cur_tcb;                                     \
+         cur_tcb->size_ = (char *)&cur_tcb - (char *)cur_tcb->stack_; \
+         if (cur_tcb->stack_ != NULL)                                 \
+         {                                                            \
+            free(cur_tcb->stack_);                                    \
+         }                                                            \
+         cur_tcb->stack_ = malloc(cur_tcb->size_);                    \
+         if (cur_tcb->stack_ = NULL)                                  \
+         {                                                            \
+            perror("malloc failed");                                  \
+            exit(-1);                                                 \
+         }                                                            \
+         memcpy(cur_tcb->stack_, cur_tcb->sp_, cur_tcb->size_);       \
+      }                                                               \
    }
 
 #define sthread_yield()        \
