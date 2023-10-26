@@ -31,8 +31,11 @@
         memcpy(cur_tcb->stack_, cur_tcb->sp_, cur_tcb->size_);         \
     }
 
-#define sthread_yield() \
-    {                   \
+#define sthread_yield()            \
+    {                              \
+        capture();                 \
+        thr_queue.push(cur_tcb);   \
+        longjmp(scheduler_env, 1); \
     }
 
 #define sthread_init()                                         \
