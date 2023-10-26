@@ -15,32 +15,41 @@
       }                          \
    }
 
-#define scheduler_start()           \
-   {                                \
-      if (setjmp(main_env) == 0)    \
-      {                             \
-         longjmp(scheduler_env, 1); \
-      }                             \
+#define scheduler_start()                                               \
+   {                                                                    \
+      if (setjmp(cur_tcb->env_) == 0)                                   \
+      {                                                                 \
+         char stack_top;                                                \
+         cur_tcb->sp_ = &stack_top;                                     \
+                                                                        \
+         if (cur_tcb->stack_ != NULL)                                   \
+         {                                                              \
+            free(cur_tcb->stack_);                                      \
+         }                                                              \
+                                                                        \
+         cur_tcb->size_ = (char *)main_env[0]._sp - (char *)&stack_top; \
+         cur_tcb->stack_ = malloc(cur_tcb->size_);                      \
+         if (!cur_tcb->stack_)                                          \
+         {                                                              \
+            cerr << "Failed to allocate memory for the stack!" << endl; \
+            exit(-1);                                                   \
+         }                                                              \
+         memcpy(cur_tcb->stack_, &stack_top, cur_tcb->size_);           \
+         thr_queue.push(cur_tcb);                                       \
+      }                                                                 \
    }
 
-#define capture()                                            \
-   {                                                         \
-      char stack_top;                                        \
-      char *current_sp = &stack_top;                         \
-                                                             \
-      if (!cur_tcb->stack_)                                  \
-      {                                                      \
-         cur_tcb->size_ = cur_tcb->sp_ - current_sp;         \
-                                                             \
-         cur_tcb->stack_ = malloc(cur_tcb->size_);           \
-         if (!cur->tcb_stack_)                               \
-         {                                                   \
-            perror("Failed to allocate memory");             \
-            exit(-1);                                        \
-         }                                                   \
-      }                                                      \
-      memcpy(cur_tcb->stack_, cur_tcb->sp_, cur_tcb->size_); \
-      thr_queue.push(cur_tcb);                               \
+#define capture()                                                       \
+   {                                                                    \
+      if (setjmp(cur_tcb->env_) == 0)                                   \
+      {                                                                 \
+         char stack_top;                                                \
+         cur_tcb->sp_ = &stack_top;                                     \
+         cur_tcb->size_ = (char *)main_env[0]._sp - (char *)&stack_top; \
+         cur_tcb->stack_ = realloc(cur_tcb->stack_, cur_tcb->size_);    \
+         memcpy(cur_tcb->stack_, &stack_top, cur_tcb->size_);           \
+         thr_queue.push(cur_tcb);                                       \
+      }                                                                 \
    }
 
 #define sthread_yield()          \

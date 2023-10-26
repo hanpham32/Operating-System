@@ -1,4 +1,4 @@
-#include "sthread.cpp"
+#include "sthread_.cpp"
 
 void func1(void *arg)
 {
