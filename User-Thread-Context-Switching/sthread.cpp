@@ -32,14 +32,20 @@
         thr_queue.push(cur_tcb);                                       \
     }
 
-#define sthread_yield()                \
-    {                                  \
-        if (alarmed)                   \
-        {                              \
-            capture();                 \
-            thr_queue.push(cur_tcb);   \
-            longjmp(scheduler_env, 1); \
-        }                              \
+#define sthread_yield()                                                \
+    {                                                                  \
+        if (alarmed)                                                   \
+        {                                                              \
+            capture();                                                 \
+            if (setjmp(cur_tcb->env_) == 0)                            \
+            {                                                          \
+                memcpy(cur_tcb->sp_, cur_tcb->stack_, cur_tcb->size_); \
+                alarmed = false;                                       \
+                longjmp(scheduler_env, 1);                             \
+            }                                                          \
+            memcpy(cur_tcb->sp_, cur_tcb->stack_, cur_tcb->size_);     \
+            thr_queue.push(cur_tcb);                                   \
+        }                                                              \
     }
 
 #define sthread_init()                                         \
