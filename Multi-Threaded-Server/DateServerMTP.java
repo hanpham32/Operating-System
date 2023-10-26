@@ -6,8 +6,8 @@
  */
 
 import java.net.*;
-import java.io.*;
 import java.util.concurrent.*;
+import java.io.IOException;
 
 public class DateServerMTP {
     public static void main(String[] args) {
@@ -17,22 +17,18 @@ public class DateServerMTP {
         }
 
         int port = Integer.parseInt(args[0]);
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        ExecutorService executor = Executors.newFixedThreadPool(10); // Example: Create a thread pool of 10
 
         try {
             ServerSocket sock = new ServerSocket(port);
-
             while (true) {
                 Socket client = sock.accept();
-                Worker worker = new Worker(client);
-                executor.execute(worker);
+                executor.execute(new Worker(client));
             }
-        } catch (IOException ioe) {
-            System.err.println(ioe);
+        } catch (IOException ie) {
+            System.err.println(ie);
         } finally {
-            if (!executor.isShutdown()) {
-                executor.shutdown();
-            }
+            executor.shutdown();
         }
     }
 }

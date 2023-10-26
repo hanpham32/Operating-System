@@ -2,7 +2,8 @@
  * Han PHam
  * CSS 430 B Au 23 Operating System
  * Professor Robert Dimpsey
- * Worker Class
+ * Worker Class:
+ * Handles client's request, simulates 5000ms work and sending the date
  */
 
 import java.net.*;
@@ -19,16 +20,15 @@ public class Worker implements Runnable {
     public void run() {
         try {
             PrintWriter pout = new PrintWriter(client.getOutputStream(), true);
-
-            // Simulate 5000ms of work
-            Thread.sleep(5000);
-
-            // Write the Date to the socket
+            // Simulated 5000ms work
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+            }
             pout.println(new java.util.Date().toString());
-
             client.close();
-        } catch (IOException | InterruptedException e) {
-            System.err.println(e);
+        } catch (IOException ie) {
+            System.err.println(ie);
         }
     }
 }

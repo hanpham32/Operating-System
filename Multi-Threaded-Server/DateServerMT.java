@@ -19,15 +19,13 @@ public class DateServerMT {
 
         try {
             ServerSocket sock = new ServerSocket(port);
-
             while (true) {
                 Socket client = sock.accept();
-                Worker worker = new Worker(client);
-                Thread thread = new Thread(worker);
-                thread.start();
+                Thread workerThread = new Thread(new Worker(client));
+                workerThread.start();
             }
-        } catch (IOException ioe) {
-            System.err.println(ioe);
+        } catch (IOException ie) {
+            System.err.println(ie);
         }
     }
 }
