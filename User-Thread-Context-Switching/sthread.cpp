@@ -23,31 +23,31 @@
       }                             \
    }
 
-#define capture()                                                     \
-   {                                                                  \
-      if (setjmp(cur_tcb->env_) == 0)                                 \
-      {                                                               \
-         cur_tcb->sp_ = &cur_tcb;                                     \
-         cur_tcb->size_ = (char *)&cur_tcb - (char *)cur_tcb->stack_; \
-         if (cur_tcb->stack_ != NULL)                                 \
-         {                                                            \
-            free(cur_tcb->stack_);                                    \
-         }                                                            \
-         cur_tcb->stack_ = malloc(cur_tcb->size_);                    \
-         if (cur_tcb->stack_ = NULL)                                  \
-         {                                                            \
-            perror("malloc failed");                                  \
-            exit(-1);                                                 \
-         }                                                            \
-         memcpy(cur_tcb->stack_, cur_tcb->sp_, cur_tcb->size_);       \
-      }                                                               \
+#define capture()                                            \
+   {                                                         \
+      char stack_top;                                        \
+      char *current_sp = &stack_top;                         \
+                                                             \
+      if (!cur_tcb->stack_)                                  \
+      {                                                      \
+         cur_tcb->size_ = cur_tcb->sp_ - current_sp;         \
+                                                             \
+         cur_tcb->stack_ = malloc(cur_tcb->size_);           \
+         if (!cur->tcb_stack_)                               \
+         {                                                   \
+            perror("Failed to allocate memory");             \
+            exit(-1);                                        \
+         }                                                   \
+      }                                                      \
+      memcpy(cur_tcb->stack_, cur_tcb->sp_, cur_tcb->size_); \
+      thr_queue.push(cur_tcb);                               \
    }
 
-#define sthread_yield()        \
-   {                           \
-      capture();               \
-      thr_queue.push(cur_tcb); \
-      longjmp(main_env, 1);    \
+#define sthread_yield()          \
+   {                             \
+      capture();                 \
+      thr_queue.push(cur_tcb);   \
+      longjmp(scheduler_env, 1); \
    }
 
 #define sthread_init()                                       \
