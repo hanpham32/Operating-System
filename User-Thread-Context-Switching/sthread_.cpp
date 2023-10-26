@@ -29,6 +29,7 @@
         cur_tcb->sp_ = sp;                                             \
         cur_tcb->stack_ = malloc(cur_tcb->size_);                      \
         memcpy(cur_tcb->stack_, cur_tcb->sp_, cur_tcb->size_);         \
+        thr_queue.push(cur_tcb);                                       \
     }
 
 #define sthread_yield()            \
