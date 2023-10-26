@@ -23,8 +23,8 @@
 
 #define capture()                                                      \
     {                                                                  \
-        register void sp asm("sp");                                    \
-        register void bp asm("bp");                                    \
+        register void *sp asm("sp");                                   \
+        register void *bp asm("bp");                                   \
         cur_tcb->size_ = (int)((long long int)bp - (long long int)sp); \
         cur_tcb->sp_ = sp;                                             \
         cur_tcb->stack_ = malloc(cur_tcb->size_);                      \
