@@ -32,13 +32,14 @@
         thr_queue.push(cur_tcb);                                       \
     }
 
-#define sthread_yield()              \
-    {                                \
-        signal(SIGALARM, sig_alarm); \
-        alarm(5);                    \
-        capture();                   \
-        thr_queue.push(cur_tcb);     \
-        longjmp(scheduler_env, 1);   \
+#define sthread_yield()                \
+    {                                  \
+        if (alarmed)                   \
+        {                              \
+            capture();                 \
+            thr_queue.push(cur_tcb);   \
+            longjmp(scheduler_env, 1); \
+        }                              \
     }
 
 #define sthread_init()                                         \
