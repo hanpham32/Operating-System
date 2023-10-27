@@ -2,7 +2,7 @@
  * Han PHam
  * CSS 430 B Au 23 Operating System
  * Professor Robert Dimpsey
- * Multi-Threaded Pool DateServer Class
+ * Multi-Threaded Java Pool DateServer Class
  */
 
 import java.net.*;
