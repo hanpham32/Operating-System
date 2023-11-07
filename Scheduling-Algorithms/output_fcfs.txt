@@ -1,0 +1,16 @@
+Running task = [T1] [4] [20] for 20 units.
+Time is now: 20
+Running task = [T2] [3] [25] for 25 units.
+Time is now: 45
+Running task = [T3] [3] [25] for 25 units.
+Time is now: 70
+Running task = [T4] [5] [15] for 15 units.
+Time is now: 85
+Running task = [T5] [5] [20] for 20 units.
+Time is now: 105
+Running task = [T6] [1] [10] for 10 units.
+Time is now: 115
+Running task = [T7] [3] [30] for 30 units.
+Time is now: 145
+Running task = [T8] [10] [25] for 25 units.
+Time is now: 170

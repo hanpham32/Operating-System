@@ -1,0 +1,38 @@
+Running task = [T1] [4] [10] for 10 units.
+Time is now: 10
+Running task = [T2] [3] [10] for 10 units.
+Time is now: 20
+Running task = [T3] [3] [10] for 10 units.
+Time is now: 30
+Running task = [T4] [5] [10] for 10 units.
+Time is now: 40
+Running task = [T5] [5] [10] for 10 units.
+Time is now: 50
+Running task = [T6] [1] [10] for 10 units.
+Time is now: 60
+Running task = [T7] [3] [10] for 10 units.
+Time is now: 70
+Running task = [T8] [10] [10] for 10 units.
+Time is now: 80
+Running task = [T1] [4] [10] for 10 units.
+Time is now: 90
+Running task = [T2] [3] [10] for 10 units.
+Time is now: 100
+Running task = [T3] [3] [10] for 10 units.
+Time is now: 110
+Running task = [T4] [5] [5] for 5 units.
+Time is now: 115
+Running task = [T5] [5] [10] for 10 units.
+Time is now: 125
+Running task = [T7] [3] [10] for 10 units.
+Time is now: 135
+Running task = [T8] [10] [10] for 10 units.
+Time is now: 145
+Running task = [T2] [3] [5] for 5 units.
+Time is now: 150
+Running task = [T3] [3] [5] for 5 units.
+Time is now: 155
+Running task = [T7] [3] [10] for 10 units.
+Time is now: 165
+Running task = [T8] [10] [5] for 5 units.
+Time is now: 170

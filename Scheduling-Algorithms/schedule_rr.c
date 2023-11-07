@@ -1,23 +1,23 @@
+// Pham Han
+// schedule_rr.c
+// Round Robin Scheduling Algorithm
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 #include "task.h"
 #include "list.h"
 #include "schedulers.h"
 #include "cpu.h"
 
-// Global variables for the task list and counters
-struct node *head = NULL;
-struct node *last = NULL;
-struct node *new = NULL;
-struct node *test = NULL;
-int num = 0;
+// Global variables for the task list
+struct node *head = NULL; // Head of the list
+struct node *last = NULL; // Pointer to the last node in the list
+struct node *new = NULL;  // Pointer to the new node to be added
 
 // Function to add a task to the list
 void add(char *name, int priority, int burst)
 {
-    num = num + 1;
     if (head == NULL)
     {
         // If the list is empty, create the first node

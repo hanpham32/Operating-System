@@ -1,4 +1,7 @@
-// Include necessary libraries
+// Pham Han
+// schedule_priority.c
+// Priority Scheduling Algorithm
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,10 +11,9 @@
 #include "cpu.h"
 
 // Declare global pointers for nodes in the linked list
-struct node *head = NULL;
-struct node *current = NULL;
-struct node *new = NULL;
-struct node *final = NULL;
+struct node *head = NULL;    // Head of the list
+struct node *current = NULL; // Pointer to the current node in the list
+struct node *new = NULL;     // Pointer to the new node to be added
 
 // Function to add tasks to the linked list
 void add(char *name, int priority, int burst)
@@ -125,6 +127,7 @@ void schedule()
     int burst = 0;
 
     struct node *ref = head;
+
     // Traverse the list and run each task, keeping track of the total burst time
     while (ref != NULL)
     {

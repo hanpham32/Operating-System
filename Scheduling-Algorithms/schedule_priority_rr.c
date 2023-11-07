@@ -1,30 +1,36 @@
+// Pham Han
+// schedule_priority_rr.c
+// Priority Round Robin Scheduling Algorithm
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 #include "task.h"
 #include "list.h"
 #include "schedulers.h"
 #include "cpu.h"
-// Global variables for the task list and counters
-struct node *head = NULL;
-struct node *last = NULL;
-struct node *new = NULL;
-struct node *current = NULL;
+
+// Global variables for the task list
+struct node *head = NULL;    // Head of the list
+struct node *last = NULL;    // Pointer to the last node in the list
+struct node *new = NULL;     // Pointer to the new node to be added
+struct node *current = NULL; // Pointer to the current node in the list
 
 // Function to add a task to the list
 void add(char *name, int priority, int burst)
 {
-
+    // If the list is empty
     if (head == NULL)
     {
-        // If the list is empty, create the first node
+        // Create the first node
         head = malloc(sizeof(struct node));
+
         // Set the task data
         head->task = malloc(sizeof(struct task));
         head->task->name = name;
-        head->task->burst = burst;
         head->task->priority = priority;
+        head->task->burst = burst;
+
         // set the next node to be null
         head->next = NULL;
         current = head;
@@ -34,9 +40,10 @@ void add(char *name, int priority, int burst)
         // If the list is not empty, add a new node at the end
         new = malloc(sizeof(struct node));
         new->task = malloc(sizeof(struct task));
-        new->task->burst = burst;
         new->task->name = name;
         new->task->priority = priority;
+        new->task->burst = burst;
+
         // if current->next is NULL
         if (!(current->next))
         {
@@ -50,8 +57,10 @@ void add(char *name, int priority, int burst)
             {
                 // set new to point to head which is in the second position
                 new->next = current;
+
                 // head now holds the address of new which is in the first position
                 head = new;
+
                 // reset current to new
                 current = new;
             }
@@ -59,6 +68,7 @@ void add(char *name, int priority, int burst)
         // If current->next is not null
         else
         {
+            // For nodes in the middle
             while (1)
             {
                 // decide order of tasks based on their priority correlation
@@ -87,6 +97,7 @@ void add(char *name, int priority, int burst)
                 }
                 else if (new->task->priority == current->next->task->priority)
                 {
+                    // Handle the case where the new task has the same priority as the next task
                     current = current->next;
                     if (current->next == NULL)
                     {
@@ -107,6 +118,7 @@ void add(char *name, int priority, int burst)
                 }
                 else if ((new->task->priority) < (current->next->task->priority))
                 {
+                    // Continue searching for the right place to insert the new node
                     current = current->next;
                     if (current->next == NULL)
                     {
@@ -123,11 +135,14 @@ void add(char *name, int priority, int burst)
 // Function to invoke the scheduler
 void schedule()
 {
+    // Initialize time and reference pointers for scheduling
     int time = 0;
     current = head;
     struct node *ref = head;
     struct node *beginning = malloc(sizeof(struct node));
     int newburst = 0;
+
+    // Iterate through the task list
     while (ref != NULL)
     {
         if (ref->next == NULL)

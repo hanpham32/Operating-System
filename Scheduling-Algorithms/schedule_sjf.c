@@ -1,20 +1,19 @@
-// Include necessary libraries
+// Pham Han
+// schedule_sjf.c
+// Shortest Job First Scheduling Algorithm
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-// Include custom header files for task, list, schedulers, and cpu
 #include "task.h"
 #include "list.h"
 #include "schedulers.h"
 #include "cpu.h"
 
-// Declare global variables for the head, current, new, final nodes and the task number
-struct node *head = NULL;
-struct node *current = NULL;
-struct node *new = NULL;
-struct node *final = NULL;
-int num = 0;
+// Declare global variables for the head, current, new nodes
+struct node *head = NULL;    // Head of the list
+struct node *current = NULL; // Pointer to the current node in the list
+struct node *new = NULL;     // Pointer to the new node to be added
 
 // Add a task to the list with the given name, priority, and burst time
 void add(char *name, int priority, int burst)
@@ -27,8 +26,8 @@ void add(char *name, int priority, int burst)
         // Set the task properties
         head->task = malloc(sizeof(struct task));
         head->task->name = name;
-        head->task->burst = burst;
         head->task->priority = priority;
+        head->task->burst = burst;
 
         // Set the next node to be null
         head->next = NULL;
@@ -41,9 +40,9 @@ void add(char *name, int priority, int burst)
         new = malloc(sizeof(struct node));
 
         new->task = malloc(sizeof(struct task));
-        new->task->burst = burst;
         new->task->name = name;
         new->task->priority = priority;
+        new->task->burst = burst;
 
         // Handle cases based on the burst times of the current and new tasks
         if (!(current->next))
@@ -127,6 +126,7 @@ void schedule()
 {
     int time = 0;
     struct node *ref = head;
+
     while (ref != NULL)
     {
         // Run the task and update the time
