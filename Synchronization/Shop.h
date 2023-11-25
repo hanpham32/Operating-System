@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <queue>
+#include <vector>
+#include <map>
 using namespace std;
 
 #define kDefaultNumChairs 3
@@ -13,44 +15,61 @@ using namespace std;
 class Shop
 {
 public:
-   Shop(int num_barbers, int num_chairs) : max_waiting_cust_((num_chairs > 0) ? num_chairs : kDefaultNumChairs), max_barbers_((num_barbers) > 0 ? num_barbers : kDefaultBarbers), customer_in_chair_(0),
-                                           in_service_(false), money_paid_(false), cust_drops_(0)
-   {
-      init();
-   };
-   Shop() : max_waiting_cust_(kDefaultNumChairs), max_barbers_(kDefaultBarbers), customer_in_chair_(0), in_service_(false),
-            money_paid_(false), cust_drops_(0)
-   {
-      init();
-   };
+   Shop(int num_barbers, int num_chairs);
+   Shop();
 
    int visitShop(int id); // return return barber ID or -1 (not served)
    void leaveShop(int customer_id, int barber_id);
-   void helloCustomer(int id);
-   void byeCustomer(int id);
+   void helloCustomer(int barber_id);
+   void byeCustomer(int barber_id);
    int get_cust_drops() const;
 
+   void addAvailableBarber(int id);
+   void removeAvailableBarber();
+   int getAvailableBarberId() const;
+   void assignBarberToCustomer();
+   int getAvailableWaitingChairs() const;
+
 private:
-   const int max_waiting_cust_; // the max number of threads that can wait
-   int customer_in_chair_;      // number of customer being served
-   bool in_service_;
-   bool money_paid_;
-   queue<int> waiting_chairs_; // includes the ids of all waiting threads
+   int max_waiting_cust_; // number of chairs; the max number of threads that can wait
+   int max_barbers_;      // the number of barber in the shop
+
+   enum customersState
+   {
+      WAIT,
+      CHAIR,
+      LEAVING
+   };
+
+   struct Barber
+   {
+      int id;
+      pthread_cond_t barberCond;
+      int my_customer = -1; // no assigned customer
+      bool money_paid = false;
+   };
+
+   struct Customer
+   {
+      int id;
+      pthread_cond_t customerCond;
+      int my_barber = -1; // no assigned barber
+      customersState state = WAIT;
+   };
+
+   Barber *barbers;
+   map<int, Customer> customers;
+
+   queue<int> sleeping_barbers_; // queue of sleeping barbers
+   queue<int> waiting_chairs_;   //  queue of waiting customers
+
    int cust_drops_;
-   const int max_barbers_; // the number of barbers in the shop
 
-   // Mutexes and condition variables to coordinate threads
-   // mutex_ is used in conjuction with all conditional variables
    pthread_mutex_t mutex_;
-   pthread_cond_t cond_customers_waiting_;
-   pthread_cond_t cond_customer_served_;
-   pthread_cond_t cond_barber_paid_;
-   pthread_cond_t cond_barber_sleeping_;
 
-   static const int barber = 0; // the id of the barber thread
+   Barber *get_barber(int barber_id) const;
 
-   void init();
-   string int2string(int i);
-   void print(int person, string message);
+   // string int2string(int i);
+   // void print(int person, string message);
 };
 #endif

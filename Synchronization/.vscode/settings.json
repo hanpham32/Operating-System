@@ -5,6 +5,11 @@
         "string": "cpp",
         "iostream": "cpp",
         "queue": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "new": "cpp",
+        "map": "cpp",
+        "vector": "cpp",
+        "deque": "cpp",
+        "ostream": "cpp"
     }
 }
