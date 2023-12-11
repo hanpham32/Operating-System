@@ -1,0 +1,30 @@
+TEST 1 : GOOD 
+TEST 1 : GOOD 
+TEST 1 : GOOD 
+TEST 2 : GOOD 
+TEST 2 : GOOD 
+TEST 2 : GOOD 
+TEST 3 : GOOD 
+TEST 3 : GOOD 
+TEST 3 : GOOD 
+TEST 3 : GOOD 
+TEST 4 : GOOD 
+TEST 4 : GOOD 
+TEST 4 : BAD  : buf[0] = 0 but should be 7 
+TEST 4 : GOOD 
+TEST 4 : BAD  : buf[87] = 0 but should be 7 
+TEST 5 : GOOD 
+TEST 5 : GOOD 
+TEST 5 : GOOD 
+TEST 5 : GOOD 
+TEST 5 : BAD  : buf[0] = -48 but should be 10 
+TEST 5 : GOOD 
+TEST 5 : GOOD 
+TEST 5 : GOOD 
+TEST 6 : GOOD 
+TEST 6 : GOOD 
+TEST 6 : GOOD 
+TEST 6 : GOOD 
+TEST 6 : GOOD 
+TEST 6 : GOOD 
+TEST 6 : GOOD 

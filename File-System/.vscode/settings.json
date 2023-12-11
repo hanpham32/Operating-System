@@ -1,5 +1,6 @@
 {
   "files.associations": {
-    "alias.h": "c"
+    "alias.h": "c",
+    "__config": "c"
   }
 }
